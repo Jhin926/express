@@ -1,0 +1,93 @@
+// import { connect } from 'http2';
+
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var multer = require('multer');
+var mysql = require('mysql');
+var request = require('request');
+
+var connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '1234',
+  database : 'ymb'
+});
+/* connection.connect();
+connection.query('SELECT id from city', function(err, rows, fields){
+  if(err) throw err;
+  console.log('the xx is:', rows[0]);
+}); */
+/* let addSql = 'INSERT INTO country(Code, Name, Continent, Region, SurfaceArea, IndepYear, Population, LifeExpectancy, GNP, GNPOld, LocalName, GovernmentForm, HeadOfState, Capital, Code2) VALUES ("YMB","yemubing","Asia",?,?,?,?,?,?,?,?,?,?,?,?)';
+let addSqlParam = [1,1,1,1,1,1,1,1,1,1,1,1];
+connection.query(addSql, addSqlParam, function(err, rows, fields){
+  if(err) throw err;
+  console.log('success');
+}); */
+// connection.end();
+
+// var p_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb055edabdbc3e271&secret=f6d4d771b0217702b91093b6d158bfad";
+/* var options = {
+  url: 'https://www.baidu.com',
+  method: "get"
+};
+request(options, function(err, res, data) {
+  console.log('返回的數據------' + JSON.stringify(data));
+}); */
+
+var index = require('./routes/index');
+var users = require('./routes/users');
+var ymb = require('./routes/ymb');
+var upload = require('./routes/upload');
+http://15288.m.168taoke.com/SelfiePoster/List?id=10265&pmid=1408
+
+var app = express();
+// app.set('jsonp callback name', 'jsoncallback');
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(multer({dest: '/tmp/'}).array('image'));
+
+app.use('/', index);
+app.use('/users', users);
+app.use('/ymb', ymb);
+app.use('/upload', upload);
+app.get('/index.html', function(req, res) {
+  res.sendFile('index.html');
+});
+// app.post('/upload', function (req, res) {
+//   console.log(req.files);
+// })
+
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;
