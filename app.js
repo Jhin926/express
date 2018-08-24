@@ -36,6 +36,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var ymb = require('./routes/ymb');
 var upload = require('./routes/upload');
+var getReq = require('./routes/getReq');
 
 var app = express();
 // app.set('jsonp callback name', 'jsoncallback');
@@ -57,6 +58,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/ymb', ymb);
 app.use('/upload', upload);
+app.use('/getreq', getReq);
 app.get('/index.html', function(req, res) {
   res.sendFile('index.html');
 });
